@@ -1,11 +1,15 @@
 "use client";
 
-import React from "react";
+
+import React, { useState, useEffect } from 'react';
 import { Category, Price, Brand, Arrival, Cloth } from "@/constants";
-import Image from "next/image";
-import { X } from "lucide-react";
+import { X, ShoppingCart } from "lucide-react";
 import { useAppSelector, useAppDispatch } from "../redux/app/hooks";
 import { addToCart } from "../redux/features/cart/cartSlice";
+import Image from "next/image";
+import getProducts from "@/lib/get-products";
+import { ProductInterface } from '@/types';
+
 
 export default function CategorySection() {
   const dispatch = useAppDispatch();
@@ -13,6 +17,18 @@ export default function CategorySection() {
   const handleAddToCart = (item: any) => {
     dispatch(addToCart(item));
   };
+
+
+  const [products, setProducts] = useState<ProductInterface[]>([]);
+  const [cart, setCart] = useState<ProductInterface[]>([]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const productData = await getProducts();
+      setProducts(productData.items);
+    };
+    fetchProducts();
+  }, []);
 
   return (
     <section className="px-6 lg:px-16 py-2 lg:py-8">
@@ -115,37 +131,27 @@ export default function CategorySection() {
             </div>
             <div className="mt-8">
               <div className="gap-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
-                {Cloth.map((item) => (
+                {products.map((product, index) => (
                   <div
-                    key={item.id}
+                    key={index}
                     className="mt-2 flex flex-col gap-3 border border-[#D9D9D9] p-3 rounded-lg"
                   >
                     <Image
-                      src={item.imgIcon}
-                      alt="card-image"
+                      src={`https://api.timbu.cloud/images/${product.photos[0]?.url}`}
+                      alt={product.name ?? ""}
                       width={200}
                       height={200}
                     />
                     <div className="flex flex-col gap-2">
-                      <p>{item.title}</p>
-                      <p>{item.price}</p>
-                      <Image
-                        src={item.ratingIcon}
-                        alt="rating-icon"
-                        width={100}
-                        height={100}
-                      />
+                      <p>{product.name}</p>
+                      <p>${product.current_price?.[0]?.USD?.[0] || 'N/A'}</p>
                       <button
                         className="flex bg-[#536EFD] hover:bg-blue-800 text-white items-center justify-center p-2 rounded-lg w-30 lg:w-40 transition-all duration-500"
-                        onClick={() => handleAddToCart(item)}
+                        onClick={() => handleAddToCart(product)}
                       >
-                        <Image
-                          src={item.cartIcon}
-                          alt="card-image"
-                          width={20}
-                          height={20}
-                        />
-                        <p>{item.addtocart}</p>
+                        <ShoppingCart  />
+                        
+                        Add to Cart
                       </button>
                     </div>
                   </div>
