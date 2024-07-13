@@ -98,16 +98,6 @@ function App() {
   return (
     <div>
       <h1>Products</h1>
-      <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-        {data && data.products && data.items.map((product: any) => (
-          <div key={product.id} style={{ border: '1px solid #ddd', padding: '16px', margin: '16px', width: '200px', textAlign: 'center' }}>
-            <img src={product.image} alt={product.name} style={{ width: '100%', height: 'auto' }} />
-            <h2>{product.name}</h2>
-            <p>{product.price}</p>
-            <button onClick={() => alert(`Added ${product.name} to cart`)}>Add to Cart</button>
-          </div>
-        ))}
-      </div>
     </div>
   );
 }
