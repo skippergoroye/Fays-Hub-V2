@@ -63,7 +63,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 interface CartItem {
   photos: any;
   current_price: any;
-  name: ReactNode;
+  name: string;
   id: string;
   imgIcon: string;
   title: string;
