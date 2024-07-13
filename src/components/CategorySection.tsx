@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -21,11 +20,14 @@ export default function CategorySection() {
 
   const [products, setProducts] = useState<ProductInterface[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProducts = async () => {
+      setLoading(true); // Set loading to true before fetching data
       const productData = await getProducts();
       setProducts(productData.items);
+      setLoading(false); // Set loading to false after data is fetched
     };
     fetchProducts();
   }, []);
@@ -141,57 +143,65 @@ export default function CategorySection() {
               </div>
             </div>
             <div className="mt-8">
-              <div className="gap-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
-                {currentProducts.map((product, index) => (
-                  <div
-                    key={index}
-                    className="mt-2 flex flex-col gap-3 border border-[#D9D9D9] p-3 rounded-lg"
-                  >
-                    <Image
-                      src={`https://api.timbu.cloud/images/${product.photos[0]?.url}`}
-                      alt={product.name ?? ""}
-                      width={200}
-                      height={200}
-                    />
-                    <div className="flex flex-col gap-2">
-                      <p>{product.name}</p>
-                      <p>${product.current_price?.[0]?.USD?.[0] || 'N/A'}</p>
-                      <button
-                        className="flex bg-[#536EFD] hover:bg-blue-800 text-white items-center justify-center p-2 rounded-lg w-30 lg:w-40 transition-all duration-500"
-                        onClick={() => handleAddToCart(product)}
+              {loading ? (
+                <div className="flex justify-center items-center">
+                  <div className="loader">Loading...</div>
+                </div>
+              ) : (
+                <>
+                  <div className="gap-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
+                    {currentProducts.map((product, index) => (
+                      <div
+                        key={index}
+                        className="mt-2 flex flex-col gap-3 border border-[#D9D9D9] p-3 rounded-lg"
                       >
-                        <ShoppingCart />
-                        Add to Cart
-                      </button>
-                    </div>
+                        <Image
+                          src={`https://api.timbu.cloud/images/${product.photos[0]?.url}`}
+                          alt={product.name ?? ""}
+                          width={200}
+                          height={200}
+                        />
+                        <div className="flex flex-col gap-2">
+                          <p>{product.name}</p>
+                          <p>${product.current_price?.[0]?.USD?.[0] || 'N/A'}</p>
+                          <button
+                            className="flex bg-[#536EFD] hover:bg-blue-800 text-white items-center justify-center p-2 rounded-lg w-30 lg:w-40 transition-all duration-500"
+                            onClick={() => handleAddToCart(product)}
+                          >
+                            <ShoppingCart />
+                            Add to Cart
+                          </button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-              <div className="flex justify-center mt-4">
-                <button
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  className="px-4 py-2 mx-1 border rounded disabled:opacity-50"
-                >
-                  Previous
-                </button>
-                {Array.from({ length: totalPages }, (_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => handlePageChange(index + 1)}
-                    className={`px-4 py-2 mx-1 border rounded ${currentPage === index + 1 ? 'bg-blue-500 text-white' : ''}`}
-                  >
-                    {index + 1}
-                  </button>
-                ))}
-                <button
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                  className="px-4 py-2 mx-1 border rounded disabled:opacity-50"
-                >
-                  Next
-                </button>
-              </div>
+                  <div className="flex justify-center mt-4">
+                    <button
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      className="px-4 py-2 mx-1 border rounded disabled:opacity-50"
+                    >
+                      Previous
+                    </button>
+                    {Array.from({ length: totalPages }, (_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => handlePageChange(index + 1)}
+                        className={`px-4 py-2 mx-1 border rounded ${currentPage === index + 1 ? 'bg-blue-500 text-white' : ''}`}
+                      >
+                        {index + 1}
+                      </button>
+                    ))}
+                    <button
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                      className="px-4 py-2 mx-1 border rounded disabled:opacity-50"
+                    >
+                      Next
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -199,11 +209,3 @@ export default function CategorySection() {
     </section>
   );
 }
-
-
-
-
-
-
-
-
