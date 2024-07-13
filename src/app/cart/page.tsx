@@ -15,6 +15,10 @@ const CartPage = () => {
   const cartItems = useAppSelector((state: RootState) => state.cart.items);
   const dispatch = useAppDispatch();
 
+
+
+  console.log(cartItems)
+
   return (
     <section>
        <div className="px-6 lg:px-16">
@@ -27,10 +31,10 @@ const CartPage = () => {
           <div>
             {cartItems.map((item) => (
               <div key={item.id} className="flex items-center justify-between mb-4 border-b pb-4">
-                <Image src={item.imgIcon} alt={item.title} width={100} height={100} />
+                <Image src={`https://api.timbu.cloud/images/${item.photos[0]?.url}`} alt={item.name ?? ""} width={100} height={100} />
                 <div>
                   <p className="mb-2 font-bold">Product Name</p>
-                  <p>{item.title}</p>
+                  <p>{item.name}</p>
                 </div>
                 <div className="flex items-center gap-40">
                   <div className="flex flex-col mr-4">
@@ -43,7 +47,7 @@ const CartPage = () => {
                   </div>
                   <div>
                     <p className="mb-2 font-bold">Price</p>
-                    <p>{item.price}</p>
+                    <p>{item.current_price?.[0]?.USD?.[0] || 'N/A'}</p>
                   </div>
                 </div>
                 <button onClick={() => dispatch(removeFromCart(item.id))} className="text-red-500">
