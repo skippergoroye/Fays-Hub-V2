@@ -49,7 +49,7 @@ export interface ProductInterface {
     current_price: any;
     name: string | undefined;
     photos: any;
-    // id: Key | null | undefined;
+    id: any;
     page: number;
     size: number;
     total: number;
