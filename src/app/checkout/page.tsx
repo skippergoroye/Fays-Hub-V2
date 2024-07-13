@@ -14,31 +14,12 @@ export default function Checkout() {
 
   console.log(cartItems)
 
-  // const totalAmount = cartItems.reduce((total, item) => {
-  //   const price = parseFloat(item.price.replace("$", ""));
-  //   return total + price * item.quantity;
-  // }, 0);
+  const totalAmount = cartItems.reduce((total, item) => {
+    const price = parseFloat(item.current_price?.[0]?.USD?.[0]);
+    return total + price * item.quantity;
+  }, 0);
 
 
-
-  // const totalAmount = cartItems.reduce((total, item) => {
-  //   // Extract the price string
-  //   const priceStr = item?.current_price?.[0]?.USD?.[0];
-    
-  //   // Check if priceStr is defined and is a valid string
-  //   if (typeof priceStr === 'string') {
-  //     // Remove the dollar sign and parse the float
-  //     const price = parseFloat(priceStr.replace("$", ""));
-      
-  //     // Check if the parsed price is a valid number
-  //     if (!isNaN(price)) {
-  //       return total + price * item.quantity;
-  //     }
-  //   }
-    
-  //   // If price is not valid, do not change the total
-  //   return total;
-  // }, 0);
 
   const handlePlaceOrder = () => {
     localStorage.removeItem("cart");
@@ -244,19 +225,19 @@ export default function Checkout() {
                         {item.quantity} x{" "}
                         {item.current_price?.[0]?.USD?.[0] || "N/A"}
                       </p>
-                      {/* <p>
+                      <p>
                         $
                         {(
-                          parseFloat(item.current_price?.[0]?.USD?.[0].replace("$", "")) *
+                          parseFloat(item.current_price?.[0]?.USD?.[0]) *
                           item.quantity
                         ).toFixed(2)}
-                      </p> */}
+                      </p>
                     </div>
                   ))}
                   <div className="flex justify-between mt-4 border-t pt-4">
                     <p className="text-xl font-semibold">Total</p>
                     <p className="text-xl font-semibold">
-                      {/* ${totalAmount.toFixed(2)} */}
+                      ${totalAmount.toFixed(2)}
                     </p>
                   </div>
                   <button
