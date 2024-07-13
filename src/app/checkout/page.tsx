@@ -1,23 +1,48 @@
-"use client"
+"use client";
 import React, { useState } from "react";
 import Image from "next/image";
 import { RootState } from "../../redux/app/store";
 import { useAppSelector } from "../../redux/app/hooks";
 import { Footer, Navbar } from "@/components";
-import { useRouter } from 'next/navigation'
+import { useRouter } from "next/navigation";
 
 export default function Checkout() {
   const cartItems = useAppSelector((state: RootState) => state.cart.items);
-  const router = useRouter()
+  const router = useRouter();
 
-  const totalAmount = cartItems.reduce((total, item) => {
-    const price = parseFloat(item.price.replace("$", ""));
-    return total + price * item.quantity;
-  }, 0);
+
+
+  console.log(cartItems)
+
+  // const totalAmount = cartItems.reduce((total, item) => {
+  //   const price = parseFloat(item.price.replace("$", ""));
+  //   return total + price * item.quantity;
+  // }, 0);
+
+
+
+  // const totalAmount = cartItems.reduce((total, item) => {
+  //   // Extract the price string
+  //   const priceStr = item?.current_price?.[0]?.USD?.[0];
+    
+  //   // Check if priceStr is defined and is a valid string
+  //   if (typeof priceStr === 'string') {
+  //     // Remove the dollar sign and parse the float
+  //     const price = parseFloat(priceStr.replace("$", ""));
+      
+  //     // Check if the parsed price is a valid number
+  //     if (!isNaN(price)) {
+  //       return total + price * item.quantity;
+  //     }
+  //   }
+    
+  //   // If price is not valid, do not change the total
+  //   return total;
+  // }, 0);
 
   const handlePlaceOrder = () => {
     localStorage.removeItem("cart");
-    router.push('/paynow', { scroll: false })
+    router.push("/paynow", { scroll: false });
     // alert("Order placed successfully!");
   };
 
@@ -27,7 +52,9 @@ export default function Checkout() {
         <Navbar />
         <div className="flex flex-col md:flex-row">
           <div className="w-full md:w-1/2 md:pr-6">
-            <h1 className="font-bold text-xl font-opensans">Personal Details</h1>
+            <h1 className="font-bold text-xl font-opensans">
+              Personal Details
+            </h1>
             <div className="flex flex-col gap-6 mt-4">
               <div className="flex flex-col gap-2">
                 <label htmlFor="">Full Name</label>
@@ -57,7 +84,9 @@ export default function Checkout() {
                 </div>
               </div>
 
-              <h1 className="mb-4 font-bold text-xl font-opensans">Shipping Information</h1>
+              <h1 className="mb-4 font-bold text-xl font-opensans">
+                Shipping Information
+              </h1>
               <div className="flex flex-col md:flex-row gap-2">
                 <div className="flex flex-col gap-2 w-full md:w-1/2">
                   <label htmlFor="">Country</label>
@@ -105,7 +134,9 @@ export default function Checkout() {
                 />
               </div>
 
-              <h1 className="mb-4 font-bold text-xl font-opensans">Payment Details</h1>
+              <h1 className="mb-4 font-bold text-xl font-opensans">
+                Payment Details
+              </h1>
               <div className="flex flex-col md:flex-row gap-2">
                 <div className="flex justify-center items-center gap-2">
                   <input
@@ -145,7 +176,9 @@ export default function Checkout() {
               </div>
 
               <div className="flex flex-col gap-2">
-                <h1 className="mb-4 font-bold text-xl font-opensans">Card Details</h1>
+                <h1 className="mb-4 font-bold text-xl font-opensans">
+                  Card Details
+                </h1>
                 <div className="flex flex-col md:flex-row gap-2">
                   <div className="flex flex-col gap-2 w-full md:w-1/2">
                     <label htmlFor="">Name on card</label>
@@ -196,25 +229,34 @@ export default function Checkout() {
               ) : (
                 <div>
                   {cartItems.map((item) => (
-                    <div key={item.id} className="flex items-center justify-between mb-4 border-b pb-4">
-                      <Image src={item.imgIcon} alt={item.title} width={100} height={100} />
-                      <p>{item.title}</p>
+                    <div
+                      key={item.id}
+                      className="flex items-center justify-between mb-4 border-b pb-4"
+                    >
+                      <Image
+                        src={`https://api.timbu.cloud/images/${item.photos[0]?.url}`}
+                        alt={item.name ?? ""}
+                        width={100}
+                        height={100}
+                      />
+                      <p>{item.name}</p>
                       <p>
-                        {item.quantity} x {item.price}
+                        {item.quantity} x{" "}
+                        {item.current_price?.[0]?.USD?.[0] || "N/A"}
                       </p>
-                      <p>
+                      {/* <p>
                         $
                         {(
-                          parseFloat(item.price.replace("$", "")) *
+                          parseFloat(item.current_price?.[0]?.USD?.[0].replace("$", "")) *
                           item.quantity
                         ).toFixed(2)}
-                      </p>
+                      </p> */}
                     </div>
                   ))}
                   <div className="flex justify-between mt-4 border-t pt-4">
                     <p className="text-xl font-semibold">Total</p>
                     <p className="text-xl font-semibold">
-                      ${totalAmount.toFixed(2)}
+                      {/* ${totalAmount.toFixed(2)} */}
                     </p>
                   </div>
                   <button
@@ -233,4 +275,3 @@ export default function Checkout() {
     </section>
   );
 }
-
